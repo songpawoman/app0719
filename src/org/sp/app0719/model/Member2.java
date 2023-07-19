@@ -9,6 +9,38 @@ public class Member2 {
 	private String name;
 	private String email;
 	
+	public int getMember2_idx() {
+		return member2_idx;
+	}
+	public void setMember2_idx(int member2_idx) {
+		this.member2_idx = member2_idx;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getPass() {
+		return pass;
+	}
+	public void setPass(String pass) {
+		this.pass = pass;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
+	
 }
 
 

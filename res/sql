@@ -1,0 +1,7 @@
+create table member2(
+member2_idx int primary key auto_increment
+    , id varchar(20)
+    , pass varchar(20)
+    , name varchar(20)
+    , email varchar(50)
+    ) default character set utf8;
