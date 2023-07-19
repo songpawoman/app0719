@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
@@ -64,7 +65,12 @@ public class JoinPage extends Page implements ActionListener{
 		member2.setName(t_name.getText()); //이름 채우기 
 		member2.setEmail(t_email.getText());
 		
-		member2DAO.insert(member2);
+		int result=member2DAO.insert(member2);
+		if(result>=1) {
+			JOptionPane.showMessageDialog(this, "가입성공");
+		}else {
+			JOptionPane.showMessageDialog(this, "가입실패");
+		}		
 	}
 	
 	public void actionPerformed(ActionEvent e) {
