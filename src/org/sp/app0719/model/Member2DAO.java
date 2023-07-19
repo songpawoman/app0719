@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 //오직  Member2 테이블에 대한 CRUD 를 처리하는 DAO 객체 
 public class Member2DAO {
@@ -65,14 +67,71 @@ public class Member2DAO {
 	}
 	
 	//모든 레코드 가져오기 
-	public void selectAll() {
-	}
-	
-	//한사람에 대한 정보 가져오기 
-	public void login(Member2 member2) {
+	public List selectAll() {
 		Connection con=null;
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
+		List<Member2> list=new ArrayList<Member2>();
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			con=DriverManager.getConnection(url, user, password);
+			
+			String sql="select * from member2";
+			pstmt=con.prepareStatement(sql);
+			rs=pstmt.executeQuery();//쿼리 실행 및 표 반환
+			
+			//rs는 곧 닫히므로, rs를 대체할 DTO와  List를 이용하여 데이터를
+			//옮겨담자!!
+			
+			while(rs.next()) { //레코드가 존재하는 만큼...
+				Member2 dto = new Member2();
+				dto.setMember2_idx(rs.getInt("member2_idx"));
+				dto.setId(rs.getString("id"));
+				dto.setPass(rs.getString("pass"));
+				dto.setName(rs.getString("name"));
+				dto.setEmail(rs.getString("email"));
+				
+				list.add(dto);
+			}
+			
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			if(rs !=null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if(pstmt !=null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if(con !=null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}				
+		}
+		return list;
+	}
+	
+	//한사람에 대한 정보 가져오기 
+	public Member2 login(Member2 member2) {
+		Connection con=null;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		Member2 dto=null;
 		
 		try {
 			//드라이버 로드
@@ -86,8 +145,22 @@ public class Member2DAO {
 				String sql="select * from member2";
 				sql+=" where id='"+member2.getId()+"' and pass='"+member2.getPass()+"'";
 				
-				System.out.println(sql);
+				pstmt=con.prepareStatement(sql);
+				rs=pstmt.executeQuery(); //쿼리 실행 및 표 반환
 				
+				//로그인 성공시 레코드는 언제나 1건이므로, 
+				//rs 의 next() 메서드 호출시 true 가 반환될지 false가 반환될
+				//지에 따라 로그인 성공, 실패 여부를 따져본다 
+				if(rs.next()) {
+					//성공
+					dto = new Member2();
+					//텅 빈 DTO에 로그인 성공한 회원의 정보를 옮겨심자 
+					dto.setMember2_idx(rs.getInt("member2_idx"));
+					dto.setId(rs.getString("id"));
+					dto.setPass(rs.getString("pass"));
+					dto.setName(rs.getString("name"));
+					dto.setEmail(rs.getString("email"));
+				}
 			}
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -117,7 +190,7 @@ public class Member2DAO {
 				}
 			}			
 		}
-		
+		return dto;
 	}
 	
 	//1건 수정 

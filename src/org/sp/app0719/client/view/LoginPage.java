@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
@@ -53,7 +54,12 @@ public class LoginPage extends Page implements ActionListener{
 		member2.setId(t_id.getText());
 		member2.setPass(new String(t_pass.getPassword()));
 		
-		member2DAO.login(member2);
+		Member2 dto=member2DAO.login(member2);
+		if(dto==null) {
+			JOptionPane.showMessageDialog(this, "로그인 정보가 올바르지 않습니다");
+		}else {
+			JOptionPane.showMessageDialog(this, "인증 성공");
+		}
 	}
 	
 	public void actionPerformed(ActionEvent e) {
